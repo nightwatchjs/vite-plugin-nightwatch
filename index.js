@@ -4,6 +4,7 @@ const path = require('path');
 module.exports = function viteNightwatchPlugin() {
   return (function(options) {
     let wsUrl;
+    let logger;
     let cdp;
 
     return {
@@ -19,8 +20,6 @@ module.exports = function viteNightwatchPlugin() {
       },
 
       configureServer(server) {
-        //console.log('configureServer', server)
-
         server.middlewares.use('/test_render/', (req, res, next) => {
           // custom handle request...
           const wsUrlParts = decodeURIComponent(req.url).split('?wsurl=');
@@ -62,11 +61,12 @@ module.exports = function viteNightwatchPlugin() {
       },
 
       moduleParsed(moduleInfo) {
-        //console.log('moduleParsed', moduleInfo)
+        console.log('moduleParsed', moduleInfo)
       },
 
       configResolved(info) {
-        //console.log('configResolved', info)
+        logger = info.logger;
+        console.log('configResolved', info)
       }
     }
   })();
