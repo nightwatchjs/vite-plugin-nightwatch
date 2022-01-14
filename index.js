@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const {createServer: createViteServer} = require('vite');
 
 module.exports = function viteNightwatchPlugin() {
   return (function(options) {
@@ -29,7 +30,7 @@ module.exports = function viteNightwatchPlugin() {
 
           const testRenderer = path.join('node_modules', 'vite-plugin-nightwatch', 'src/test_renderer.html');
 
-          fs.readFile(testRenderer, 'utf8', function(err, data) {
+          fs.readFile(testRenderer, 'utf-8', function(err, data) {
             if (err) {
               throw err;
             }
@@ -40,7 +41,10 @@ module.exports = function viteNightwatchPlugin() {
               // }, 100)
             }
 
-            res.end(data);
+            // Transform HTML using Vite plugins.
+            server.transformIndexHtml(req.url, data)
+            .then(result=>res.end(result))
+            .catch(err=>res.end(err.message))     
           });
         })
       },
