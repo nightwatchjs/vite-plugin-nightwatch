@@ -1,13 +1,15 @@
 module.exports = class Command {
     async command(componentName, props, cb = function() {}) {
-
+        console.log(props);
         let scriptContent = `
-            import Component from '${componentName}'
-            var reactElement = React.createElement(Component)
-            let element = ReactDOM.render(reactElement, document.getElementById('app'));
+            import React from 'http://localhost:3000/node_modules/.vite/react.js';
+            import ReactDOM from  'http://localhost:3000/node_modules/.vite/react-dom.js'
+         
+            import Component from '${componentName}';
+            let element = ReactDOM.render(React.createElement(Component,  {setFilter: function(){window.alert("Pressed")}}), document.getElementById('app'));
             window['@component_element'] = element;
             window['@component_class'] = Component;
-            console.log('component element', reactElement)
+            console.log('component element', element);
             console.log('Component', Component)
             `
     
