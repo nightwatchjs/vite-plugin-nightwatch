@@ -3,6 +3,52 @@ module.exports = class Command {
 
     let pluginImports = '';
     let pluginsContent = '';
+    let stubContent = '';
+    let mockContent = '';
+
+    if (opts.mocks) {
+      const mocks = Object.keys(opts.mocks);
+
+      let mockFetch = false;
+      const mockFetchContent = `
+  function mockApiResponse(body) {
+    return new window.Response(JSON.stringify(body), {
+      status: 200,
+      headers: {
+        'Content-type': 'application/json'
+      }
+    });
+  }
+  
+  const stubedFetch = sinon.stub(window, 'fetch');
+      `;
+
+      if (mocks.length > 0) {
+        mockContent = `import sinon from '/node_modules/sinon/pkg/sinon-esm.js';`;
+      }
+
+      let mockFetchItemsContent = mocks.reduce((prev, mockUrl) => {
+        const {body, type = 'fetch'} = opts.mocks[mockUrl];
+        if (type === 'fetch') {
+          mockFetch = true;
+        }
+
+        prev += `
+  stubedFetch.withArgs('${mockUrl}').returns(sinon.promise(function (resolve, reject) {
+    resolve(mockApiResponse(${JSON.stringify(body)}));
+  }));
+      `;
+
+        return prev;
+
+      }, '');
+
+      if (mockFetch) {
+        mockContent += mockFetchContent;
+        mockContent += mockFetchItemsContent;
+      }
+    }
+
     const plugins = Object.keys(opts.plugins);
     if (plugins.length > 0) {
       pluginImports = plugins.reduce((prev, plugin) => {
@@ -15,8 +61,9 @@ module.exports = class Command {
     }
 
     let scriptContent = `import {mount} from '/node_modules/@vue/test-utils/dist/vue-test-utils.esm-browser.js'
-       import Component from '${componentName}'
-       ${pluginImports}
+  import Component from '${componentName}'
+  ${pluginImports}
+  ${mockContent}
        let element = mount(Component, {
          attachTo: document.getElementById('app'),
          global: {
@@ -25,8 +72,6 @@ module.exports = class Command {
        });
        window['@component_element'] = element;
        window['@component_class'] = Component;
-       console.log('component element', element)
-       console.log('Component', Component)
        `
 
     const scriptFn = function(scriptContent) {
@@ -64,13 +109,14 @@ module.exports = class Command {
       .execute(function() {
         return document.querySelectorAll('#app')[0].firstElementChild
       }, [], (result) => {
-
-
         if (!result || !result.value) {
           return null;
         }
 
-        const componentInstance = element(result.value);
+        const componentInstance = this.api.createElement(result.value, {
+          isComponent: true,
+          type: 'vue'
+        });
 
         return componentInstance;
       });
@@ -78,10 +124,3 @@ module.exports = class Command {
     return renderedElement;
   }
 }
-
-// import {mount} from '/node_modules/@vue/test-utils/dist/vue-test-utils.esm-browser.js'
-// const wrapper = mount(TopNavbar, {
-//   attachTo: document.getElementById('app')
-// });
-//
-// console.log('wrapper', wrapper);

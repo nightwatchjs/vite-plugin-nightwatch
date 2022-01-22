@@ -9,16 +9,6 @@ module.exports = function viteNightwatchPlugin() {
 
     return {
       name: 'nightwatch-plugin',
-      load(id) {
-        //console.log('LOAD hook', id)
-      },
-      resolveId(id, originator, options) {
-        //console.log('resolveId hook', id)
-      },
-      transform(data, id) {
-        //console.log('transform hook', id)
-      },
-
       configureServer(server) {
         server.middlewares.use('/test_render/', (req, res, next) => {
           // custom handle request...
@@ -28,7 +18,6 @@ module.exports = function viteNightwatchPlugin() {
           }
 
           const testRenderer = path.join('node_modules', 'vite-plugin-nightwatch', 'src/test_renderer.html');
-
           fs.readFile(testRenderer, 'utf8', function(err, data) {
             if (err) {
               throw err;
@@ -45,28 +34,8 @@ module.exports = function viteNightwatchPlugin() {
         })
       },
 
-      // transformIndexHtml(html) {
-      //   return html.replace(
-      //     /<title>(.*?)<\/title>/,
-      //     `<title>Title replaced!</title>`
-      //   )
-      // },
-
-      buildStart(options) {
-        //console.log('buildStart', options)
-      },
-
-      buildEnd(options) {
-        //console.log('buildEnd', options)
-      },
-
-      moduleParsed(moduleInfo) {
-        console.log('moduleParsed', moduleInfo)
-      },
-
       configResolved(info) {
         logger = info.logger;
-        console.log('configResolved', info)
       }
     }
   })();
