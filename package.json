@@ -9,7 +9,7 @@
   "license": "MIT",
   "dependencies": {
     "sinon": "^12.0.1",
-    "sinon-stub-promise": "^4.0.0",
+    "@vue/test-utils": "^2.0.0-rc.18",
     "ws": "^8.2.3"
   }
 }

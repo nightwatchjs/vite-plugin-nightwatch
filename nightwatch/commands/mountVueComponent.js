@@ -105,12 +105,12 @@ module.exports = class Command {
     const renderedElement = await this.api
       .navigateTo('/test_render/' + wsUrlSection)
       .execute(scriptFn, [scriptContent])
-      .pause(500)
+      .pause(this.client.argv.debug ? 0 : 500)
       .execute(function() {
         return document.querySelectorAll('#app')[0].firstElementChild
       }, [], (result) => {
         if (!result || !result.value) {
-          return null;
+          throw new Error('Could not mount the component. Run nightwatch with --devtools and --debug flags (Chrome only) and investigate the error in the browser console.')
         }
 
         const componentInstance = this.api.createElement(result.value, {
