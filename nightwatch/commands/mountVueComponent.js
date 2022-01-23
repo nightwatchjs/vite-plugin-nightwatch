@@ -60,7 +60,7 @@ module.exports = class Command {
       pluginsContent = plugins.join(',');
     }
 
-    let scriptContent = `import {mount} from '/node_modules/vite-plugin-nightwatch/node_modules/@vue/test-utils/dist/vue-test-utils.esm-browser.js'
+    let scriptContent = `import {mount} from '/node_modules/@vue/test-utils/dist/vue-test-utils.esm-browser.js'
   import Component from '${componentName}'
   ${pluginImports}
   ${mockContent}
