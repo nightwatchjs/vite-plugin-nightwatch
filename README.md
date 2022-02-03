@@ -2,7 +2,8 @@
 
 Component testing plugin that integrates [Vite](https://vitejs.dev/) with [Nightwatch.js](https://nightwatchjs.org/). Supports Vue and React components.
 
-[![Build Status][build-badge]][build]
+[![Vue Tests Status][build-badge]][build]
+[![React Tests Status][build-badge-react]][build-react]
 [![version][version-badge]][package]
 [![Discord][discord-badge]][discord]
 [![MIT License][license-badge]][license]
@@ -216,8 +217,10 @@ npm run test-react
 ## License
 MIT
 
-[build-badge]: https://github.com/nightwatchjs/vite-plugin-nightwatch/actions/workflows/node.js.yml/badge.svg?branch=main
-[build]: https://github.com/nightwatchjs/vite-plugin-nightwatch/actions/workflows/node.js.yml
+[build-badge]: https://github.com/nightwatchjs/vite-plugin-nightwatch/actions/workflows/vue-tests.yml/badge.svg?branch=main
+[build]: https://github.com/nightwatchjs/vite-plugin-nightwatch/actions/workflows/vue-tests.yml
+[build-badge-react]: https://github.com/nightwatchjs/vite-plugin-nightwatch/actions/workflows/react-tests.yml/badge.svg?branch=main
+[build-react]: https://github.com/nightwatchjs/vite-plugin-nightwatch/actions/workflows/react-tests.yml
 [version-badge]: https://img.shields.io/npm/v/vite-plugin-nightwatch.svg?style=flat-square
 [package]: https://www.npmjs.com/package/vite-plugin-nightwatch
 [license-badge]: https://img.shields.io/npm/l/vite-plugin-nightwatch.svg?style=flat-square
