@@ -85,6 +85,11 @@ module.exports = class Command {
       .launchComponentRenderer()
       .pause(1000)
       .execute(scriptFn, [scriptContent])
+
+      .launchComponentRenderer()
+      .pause(500)
+
+      .execute(scriptFn, [scriptContent])
       .pause(this.client.argv.debug ? 0 : 500)
       .execute(function() {
         return document.querySelectorAll('#app')[0].firstElementChild
