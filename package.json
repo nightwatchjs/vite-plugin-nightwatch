@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nightwatch test/specs/vue/testVueComponent.js --env vue",
+    "test": "nightwatch --env vue",
     "test-react": "nightwatch --env react"
   },
   "keywords": [
