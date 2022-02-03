@@ -1,5 +1,5 @@
 module.exports = class Command {
-  async command(componentName, opts = {}) {
+  async command(componentName, opts = {}, cb = function() {}) {
 
     let pluginImports = '';
     let pluginsContent = '';
@@ -49,7 +49,7 @@ module.exports = class Command {
       }
     }
 
-    const plugins = Object.keys(opts.plugins);
+    const plugins = Object.keys(opts.plugins || {});
     if (plugins.length > 0) {
       pluginImports = plugins.reduce((prev, plugin) => {
         prev += `import ${plugin} from '${opts.plugins[plugin]}'\n`;
@@ -81,29 +81,9 @@ module.exports = class Command {
       document.body.appendChild(scriptEl);
     }
 
-    const {debuggerAddress} = this.api.capabilities['goog:chromeOptions'] || {};
-    let wsUrl;
-    if (debuggerAddress) {
-      const address = debuggerAddress.split(':');
-      const request = await this.httpRequest({
-        host: address[0],
-        port: address[1],
-        path: '/json',
-        method: 'GET'
-      });
-
-      wsUrl = request.filter(item => {
-        return item.type === 'page'
-      })[0].webSocketDebuggerUrl;
-    }
-
-    let wsUrlSection = '';
-    if (wsUrl) {
-      //wsUrlSection = '?wsurl=' + encodeURIComponent(wsUrl);
-    }
-
     const renderedElement = await this.api
-      .navigateTo('/test_render/' + wsUrlSection)
+      .launchComponentRenderer()
+      .pause(1000)
       .execute(scriptFn, [scriptContent])
       .pause(this.client.argv.debug ? 0 : 500)
       .execute(function() {
@@ -117,6 +97,8 @@ module.exports = class Command {
           isComponent: true,
           type: 'vue'
         });
+
+        cb(componentInstance);
 
         return componentInstance;
       });

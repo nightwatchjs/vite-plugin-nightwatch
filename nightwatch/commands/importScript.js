@@ -1,5 +1,5 @@
 module.exports = class Command {
-  async command(scriptFileName, type = '', cb = function() {}) {
+  async command(scriptFileName, {scriptType = 'module', componentType = 'vue'} = {}, cb = function() {}) {
 
     const scriptFn = function(scriptFileName, scriptType) {
       var scriptEl = document.createElement('script');
@@ -11,24 +11,21 @@ module.exports = class Command {
     }
 
     const element = await this.api
-      .navigateTo('/test_render/')
-      .execute(scriptFn, [scriptFileName, type])
+      .execute(scriptFn, [scriptFileName, scriptType])
       .pause(500)
       .execute(function() {
-        return document.querySelectorAll('#app')[0].firstChild
+        return document.querySelectorAll('#app')[0].firstElementChild
       }, [], (result) => {
-        cb(result)
+        const componentInstance = this.api.createElement(result.value, {
+          isComponent: true,
+          type: componentType
+        });
 
-        return result.value;
+        cb(componentInstance)
+
+        return componentInstance;
       });
 
     return element;
   }
 }
-
-// import {mount} from '/node_modules/@vue/test-utils/dist/vue-test-utils.esm-browser.js'
-// const wrapper = mount(TopNavbar, {
-//   attachTo: document.getElementById('app')
-// });
-//
-// console.log('wrapper', wrapper);

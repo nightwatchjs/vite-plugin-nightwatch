@@ -1,16 +1,14 @@
 module.exports = class Command {
   async command(componentName, props, cb = function() {}) {
-      let scriptContent = `
-          import React from 'http://localhost:3000/node_modules/.vite/react';
-          import ReactDOM from 'http://localhost:3000/node_modules/.vite/react-dom.js'
-          import Component from '${componentName}';
-          const element = React.createElement(Component,${props});
-          ReactDOM.render(element, document.getElementById('app'));
-          window['@component_element'] = element;
-          window['@component_class'] = Component;
-          console.log('component element', element);
-          console.log('Component', Component)
-          `
+    let scriptContent = `
+    import React from '/node_modules/.vite/react';
+    import ReactDOM from '/node_modules/.vite/react-dom.js'
+    import Component from '${componentName}';
+    const element = React.createElement(Component, ${JSON.stringify(props)});
+    ReactDOM.render(element, document.getElementById('app'));
+    window['@component_element'] = element;
+    window['@component_class'] = Component;
+    `
   
     const scriptFn = function(scriptContent) {
       var scriptEl = document.createElement('script');
@@ -19,41 +17,26 @@ module.exports = class Command {
       document.body.appendChild(scriptEl);
     }
 
-      const {debuggerAddress} = this.api.capabilities['goog:chromeOptions'] || {};
-      let wsUrl;
-      if (debuggerAddress) {
-      const address = debuggerAddress.split(':');
-      const request = await this.httpRequest({
-          host: address[0],
-          port: address[1],
-          path: '/json',
-          method: 'GET'
-      });
-
-      wsUrl = request.filter(item => {
-          return item.type === 'page'
-      })[0].webSocketDebuggerUrl;
-      }
-
-      let wsUrlSection = '';
-      if (wsUrl) {
-          //wsUrlSection = '?wsurl=' + encodeURIComponent(wsUrl);
-      }
-
     const renderedElement = await this.api
-      .navigateTo('/test_render/')
-      .pause(2000)
+      .launchComponentRenderer()
+      .pause(1000)
       .execute(scriptFn, [scriptContent])
-      .pause(500)
+      .pause(this.client.argv.debug ? 0 : 500)
       .execute(function() {
-        return document.querySelectorAll('#app')[0].firstChild
+        return document.querySelectorAll('#app')[0].firstElementChild
       }, [], (result) => {
-        cb(result)
         if (!result || !result.value) {
-          return null;
+          throw new Error('Could not mount the component. Run nightwatch with --devtools and --debug flags (Chrome only) and investigate the error in the browser console.')
         }
 
-        return element(result.value);
+        const componentInstance = this.api.createElement(result.value, {
+          isComponent: true,
+          type: 'react'
+        });
+
+        cb(componentInstance)
+
+        return componentInstance;
       });
 
     return renderedElement;

@@ -1,9 +1,24 @@
 const fs = require('fs');
 const path = require('path');
+const CDPConnection = require('./src/cdp.js');
 const {createServer: createViteServer} = require('vite');
 
-module.exports = function viteNightwatchPlugin() {
-  return (function (options) {
+module.exports = function viteNightwatchPlugin(options = {}) {
+  const componentType = options.componentType || 'vue';
+  const enableCdpConnection = options.enableCdpConnection || false;
+
+  let defaultRenderPage;
+  switch (componentType) {
+    case 'react':
+      defaultRenderPage = 'src/react_renderer.html';
+      break;
+    default:
+      defaultRenderPage = 'src/react_renderer.html';
+  }
+
+  defaultRenderPage = path.join('node_modules', 'vite-plugin-nightwatch', defaultRenderPage);
+
+  return (function () {
     let wsUrl;
     let logger;
     let cdp;
@@ -18,17 +33,17 @@ module.exports = function viteNightwatchPlugin() {
             wsUrl = wsUrlParts[1];
           }
 
-          const testRenderer = path.join('node_modules', 'vite-plugin-nightwatch', 'src/test_renderer.html');
-          fs.readFile(testRenderer, 'utf-8', function (err, data) {
+          const testRenderer = options.renderPage || defaultRenderPage;
 
+          fs.readFile(testRenderer, 'utf-8', function (err, data) {
             if (err) {
               throw err;
             }
 
-            if (wsUrl) {
-              // setTimeout(function() {
-              //   cdp = new CDPConnection(wsUrl);
-              // }, 100)
+            if (wsUrl && enableCdpConnection) {
+              setTimeout(function() {
+                cdp = new CDPConnection(wsUrl);
+              }, 100)
             }
 
             // Transform HTML using Vite plugins.
