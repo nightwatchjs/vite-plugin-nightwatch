@@ -218,9 +218,9 @@ npm run test-react
 MIT
 
 [build-badge]: https://github.com/nightwatchjs/vite-plugin-nightwatch/actions/workflows/vue-tests.yml/badge.svg?branch=main
-[build]: https://github.com/nightwatchjs/vite-plugin-nightwatch/actions/workflows/vue-tests.js.yml
+[build]: https://github.com/nightwatchjs/vite-plugin-nightwatch/actions/workflows/vue-tests.yml
 [build-badge-react]: https://github.com/nightwatchjs/vite-plugin-nightwatch/actions/workflows/react-tests.yml/badge.svg?branch=main
-[build-react]: https://github.com/nightwatchjs/vite-plugin-nightwatch/actions/workflows/react-tests.js.yml
+[build-react]: https://github.com/nightwatchjs/vite-plugin-nightwatch/actions/workflows/react-tests.yml
 [version-badge]: https://img.shields.io/npm/v/vite-plugin-nightwatch.svg?style=flat-square
 [package]: https://www.npmjs.com/package/vite-plugin-nightwatch
 [license-badge]: https://img.shields.io/npm/l/vite-plugin-nightwatch.svg?style=flat-square
