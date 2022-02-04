@@ -34,7 +34,7 @@ module.exports = class Command {
           type: 'react'
         });
 
-        cb(componentInstance)
+        cb(componentInstance);
 
         return componentInstance;
       });
