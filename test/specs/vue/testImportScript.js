@@ -8,7 +8,7 @@ describe('importScript Component test', function() {
 
       // When running on Github, Vite often thinks dependencies have been updated and reloads the page, so we
       // need to re-render
-      .pause(1000)
+      .pause(5000)
       .launchComponentRenderer()
       .importScript('/test/lib/scriptToImport.js')
   })
