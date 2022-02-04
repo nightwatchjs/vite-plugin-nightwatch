@@ -87,10 +87,6 @@ module.exports = class Command {
       .pause(1000)
       .execute(scriptFn, [scriptContent])
 
-      // .pause(1000)
-      // .launchComponentRenderer()
-      // .execute(scriptFn, [scriptContent])
-
       .pause(this.client.argv.debug ? 0 : 500)
 
       .execute(function() {

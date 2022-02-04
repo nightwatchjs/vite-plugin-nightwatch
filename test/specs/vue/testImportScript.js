@@ -4,7 +4,13 @@ describe('importScript Component test', function() {
   before(async () => {
     formComponent = await browser
       .launchComponentRenderer()
-      .importScript('/test/lib/scriptToImport.js');
+      .importScript('/test/lib/scriptToImport.js')
+
+      // When running on Github, Vite often thinks dependencies have been updated and reloads the page, so we
+      // need to re-render
+      .pause(1000)
+      .launchComponentRenderer()
+      .importScript('/test/lib/scriptToImport.js')
   })
 
   it('checks the vue component rendered with importScript', function(browser) {
