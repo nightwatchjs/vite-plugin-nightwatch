@@ -148,6 +148,14 @@ let element = mount(Component, {
 window['@component_element'] = element;
 ```
 
+## Debugging Component Tests
+Debugging component tests in Nightwatch isn't as straightforward as debugging a regular Node.js application or service, since Nightwatch needs to inject the code to render to component into the browser.
+
+However, for when running the tests in Chrome, you can use the DevTools to do debugging directly in the browser. For this purpose, Nightwatch provide 2 CLI flags:
+- `--devtools` - when this is on, the Chrome DevTools will open automatically
+- `--debug` - this will cause the test execution to pause right after the component is rendered
+
+
 ## Running the Vite dev-server programmatically from Nightwatch 
 It is also possible to start the Vite dev server from the Nightwatch global `before` hook and close it in the `after` hook.
 
