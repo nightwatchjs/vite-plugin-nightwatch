@@ -7,7 +7,7 @@ export default defineConfig({
   plugins: [
     vue(),
     nightwatchPlugin({
-      renderPage: './src/test_renderer.html'
+      renderPage: './src/vue_renderer.html'
     })
   ]
 })

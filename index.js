@@ -13,7 +13,7 @@ module.exports = function viteNightwatchPlugin(options = {}) {
       defaultRenderPage = 'src/react_renderer.html';
       break;
     default:
-      defaultRenderPage = 'src/react_renderer.html';
+      defaultRenderPage = 'src/vue_renderer.html';
   }
 
   defaultRenderPage = path.join('node_modules', 'vite-plugin-nightwatch', defaultRenderPage);
