@@ -25,8 +25,8 @@ module.exports = class Command {
     }
 
     let launchUrl = '';
-    if (browser.globals.launchUrl) {
-      launchUrl = browser.globals.launchUrl;
+    if (this.api.globals.launchUrl) {
+      launchUrl = this.api.globals.launchUrl;
     }
 
     return this.api.navigateTo(`${launchUrl}/test_render/${wsUrlSection}`);
