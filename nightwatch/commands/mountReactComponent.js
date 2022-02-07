@@ -4,7 +4,7 @@ module.exports = class Command {
     import React from '/node_modules/.vite/react';
     import ReactDOM from '/node_modules/.vite/react-dom.js'
     import Component from '${componentName}';
-    const element = React.createElement(Component, ${JSON.stringify(props)});
+    const element = React.createElement(Component, ${typeof props == 'string' ? props : JSON.stringify(props)});
     ReactDOM.render(element, document.getElementById('app'));
     window['@component_element'] = element;
     window['@component_class'] = Component;
