@@ -38,7 +38,7 @@ npm run dev
 ## Configuration:
 The plugin accepts a few config options:
 
-#### - componentType:
+### - componentType:
 Specify the type of component to be tested. Possible values:
 - `vue` (default, if none specified)
 - `react`
@@ -54,7 +54,7 @@ export default defineConfig({
 })
 ```
 
-#### - renderPage:
+### - renderPage:
 Specify the path to a custom test renderer to be used. Default renderers are included in the package for both Vue and React components, but this option can overwrite that value.
 
 ```js
@@ -71,7 +71,7 @@ export default defineConfig({
 ## API Commands:
 This plugin includes a few Nightwatch commands which can be used while writing tests.
 
-#### - browser.mountVueComponent(`componentPath`, `[options]`, `[callback]`):
+### - browser.mountVueComponent(`componentPath`, `[options]`, `[callback]`):
 **Parameters:**
 - `componentPath` – location of the component file (`.vue`) to be mounted
 - `options` – this can include:
@@ -79,7 +79,7 @@ This plugin includes a few Nightwatch commands which can be used while writing t
   - `mocks`: this can be a list of url calls that can be mocked (will be passed to [sinon](https://sinonjs.org/) automatically); at the moment only [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) calls can be mocked, but XHR support will be added soon.  
 - `callback` – an optional callback function which will be called with the component element
 
-##### Example:
+#### Example:
 ```js
 const component = await browser.mountVueComponent('/src/components/Form.vue', {
   plugins: {
@@ -101,23 +101,23 @@ const component = await browser.mountVueComponent('/src/components/Form.vue', {
 })
 ```
 
-#### - browser.mountReactComponent(`componentPath`, `[props]`, `[callback]`):
+### - browser.mountReactComponent(`componentPath`, `[props]`, `[callback]`):
 **Parameters:**
 - `componentPath` – location of the component file (`.jsx`) to be mounted
 - `props` – properties to be passed to the React component, this will be serialized to JSON
 - `callback` – an optional callback function which will be called with the component element
 
-##### Example:
+#### Example:
 ```js
 const component = await browser.mountReactComponent('/src/components/Form.jsx')
 ```
 
-#### - browser.launchComponentRenderer():
+### - browser.launchComponentRenderer():
 This will call `browser.navigateTo('/test_renderer/')` and open the browser. Needs to be used before the `.importScript()` command, if used.
 
 You can also set `launchUrl` as a global at runtime and then the url to be used will be `${browser.globals.launchUrl}/test_renderer`, which makes it possible to set the launch url dynamically. 
 
-#### - browser.importScript(`scriptPath`, `[options]`, `[callback]`):
+### - browser.importScript(`scriptPath`, `[options]`, `[callback]`):
 **Parameters:**
 - `scriptPath` – location of the script file to inject into the page which will render the component; needs to be written in ESM format
 - `options` – this can include:
@@ -125,7 +125,7 @@ You can also set `launchUrl` as a global at runtime and then the url to be used 
   - `componentType`: either `vue` or `react` (default is `vue`)
 - `callback` – an optional callback function which will be called with the component element
 
-##### Example:
+#### Example:
 ```js
 const formComponent = await browser
   .launchComponentRenderer()
