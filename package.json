@@ -21,9 +21,15 @@
   "license": "MIT",
   "dependencies": {
     "@vue/test-utils": "^2.0.0-rc.18",
-    "sinon": "^12.0.1",
-    "ws": "^8.2.3"
+    "sinon": "^12.0.1"
   },
+  "files": [
+    "nightwatch",
+    "src",
+    "index.js",
+    "README.md",
+    "LICENSE"
+  ],
   "devDependencies": {
     "@vitejs/plugin-react": "^1.1.4",
     "@vitejs/plugin-vue": "^2.1.0",
