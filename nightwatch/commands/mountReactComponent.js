@@ -1,8 +1,8 @@
 module.exports = class Command {
   async command(componentName, props, cb = function() {}) {
     let scriptContent = `
-    import React from '/node_modules/.vite/react';
-    import ReactDOM from '/node_modules/.vite/react-dom.js'
+    import ReactLibs from '/node_modules/vite-plugin-nightwatch/src/react_index.js';
+    const {React, ReactDOM} = ReactLibs;
     import Component from '${componentName}';
     const element = React.createElement(Component, ${typeof props == 'string' ? props : JSON.stringify(props)});
     ReactDOM.render(element, document.getElementById('app'));
