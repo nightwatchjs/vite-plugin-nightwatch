@@ -1,7 +1,9 @@
 module.exports = class Command {
   async command(componentName, props, cb = function() {}) {
+    const reactEntryPoint = this.api.globals.entryPoint || '/node_modules/vite-plugin-nightwatch/src/react_index.js';
+
     let scriptContent = `
-    import ReactLibs from '/node_modules/vite-plugin-nightwatch/src/react_index.js';
+    import ReactLibs from '${reactEntryPoint}';
     const {React, ReactDOM} = ReactLibs;
     import Component from '${componentName}';
     const element = React.createElement(Component, ${typeof props == 'string' ? props : JSON.stringify(props)});

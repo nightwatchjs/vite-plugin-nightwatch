@@ -41,7 +41,8 @@ module.exports = {
     react: {
       src_folders: ['test/specs/react'],
       globals: {
-        componentType: 'react'
+        componentType: 'react',
+        entryPoint: '/src/react_index.js'
       }
     },
 
