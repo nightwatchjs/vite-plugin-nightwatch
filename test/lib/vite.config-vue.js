@@ -4,6 +4,9 @@ import nightwatchPlugin from '../../index.js'
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  optimizeDeps: {
+    include: ['vue']
+  },
   plugins: [
     vue(),
     nightwatchPlugin({
