@@ -15,7 +15,7 @@ npm install vite-plugin-nightwatch
 Update your [Vite configuration](https://vitejs.dev/config/):
 
 ### 
-```js
+```jsß
 import { defineConfig } from 'vite'
 import nightwatchPlugin from 'vite-plugin-nightwatch'
 
@@ -25,7 +25,6 @@ export default defineConfig({
     nightwatchPlugin()
   ]
 })
-
 ```
 
 Nightwatch assumes the Vite dev server is already running and will be using `http://localhost:3000` as base url. You can change that in your `nightwatch.conf.js` by setting either `launchUrl` or `baseUrl` properties.

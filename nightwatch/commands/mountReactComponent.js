@@ -2,15 +2,21 @@ module.exports = class Command {
   async command(componentName, props, cb = function() {}) {
     const reactEntryPoint = this.api.globals.entryPoint || '/node_modules/vite-plugin-nightwatch/src/react_index.js';
 
+    let propsFromFn = '';
+    if (typeof props == 'function') {
+      propsFromFn = `(${props.toString()})()`;
+    }
+
     let scriptContent = `
     import ReactLibs from '${reactEntryPoint}';
     const {React, ReactDOM} = ReactLibs;
     import Component from '${componentName}';
-    const element = React.createElement(Component, ${typeof props == 'string' ? props : JSON.stringify(props)});
+    const props = ${propsFromFn || (typeof props == 'string' ? props : JSON.stringify(props))};
+    const element = React.createElement(Component, props);
     ReactDOM.render(element, document.getElementById('app'));
     window['@component_element'] = element;
     window['@component_class'] = Component;
-    `
+    `;
   
     const scriptFn = function(scriptContent) {
       var scriptEl = document.createElement('script');
