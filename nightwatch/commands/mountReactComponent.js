@@ -1,11 +1,11 @@
-const {ReactIsLessThan18} = require('../../src/utils/react_version.js');
+const {isReact18} = require('../../src/utils/react_version.js');
 
 module.exports = class Command {
   async command(componentName, props, cb = function() {}) {
     const reactEntryPoint = this.api.globals.entryPoint ||
-        '/node_modules/vite-plugin-nightwatch/src/' + (ReactIsLessThan18()
-          ? 'react_index.js'
-          : 'react_18_index.js');
+        '/node_modules/vite-plugin-nightwatch/src/' + (isReact18()
+          ? 'react_18_index.js'
+          : 'react_index.js');
 
     let propsFromFn = '';
     if (typeof props == 'function') {
