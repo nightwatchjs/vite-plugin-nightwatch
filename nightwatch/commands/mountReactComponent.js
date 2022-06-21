@@ -1,6 +1,11 @@
+const {ReactIsLessThan18} = require('../../src/utils/react_version.js');
+
 module.exports = class Command {
   async command(componentName, props, cb = function() {}) {
-    const reactEntryPoint = this.api.globals.entryPoint || '/node_modules/vite-plugin-nightwatch/src/react_index.js';
+    const reactEntryPoint = this.api.globals.entryPoint ||
+        '/node_modules/vite-plugin-nightwatch/src/' + (ReactIsLessThan18()
+          ? 'react_index.js'
+          : 'react_18_index.js');
 
     let propsFromFn = '';
     if (typeof props == 'function') {
@@ -9,8 +14,8 @@ module.exports = class Command {
 
     let scriptContent = `
     import ReactLibs from '${reactEntryPoint}';
-    const {React, ReactDOM} = ReactLibs;
     import Component from '${componentName}';
+    const {React, ReactDOM} = ReactLibs;
     const props = ${propsFromFn || (typeof props == 'string' ? props : JSON.stringify(props))};
     const element = React.createElement(Component, props);
     ReactDOM.render(element, document.getElementById('app'));
