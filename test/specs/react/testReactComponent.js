@@ -6,4 +6,10 @@ describe('Render React Component test', function() {
     await browser.expect.element(formComponent).to.be.visible;
   });
 
+  afterEach(async function() {
+    await browser.unmountReactComponent();
+    const component = await browser.getFirstElementChild('#app');
+    await browser.expect(component).to.be.null;
+  })
+
 });
