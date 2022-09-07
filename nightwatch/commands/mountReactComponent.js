@@ -30,6 +30,7 @@ module.exports = class Command {
       .pause(1000)
       .execute(scriptFn, [scriptContent])
       .pause(this.client.argv.debug ? 0 : 500)
+      .axeInject()
       .execute(function() {
         return document.querySelectorAll('#app')[0].firstElementChild
       }, [], (result) => {
