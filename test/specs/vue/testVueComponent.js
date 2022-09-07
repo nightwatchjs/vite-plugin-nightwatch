@@ -19,4 +19,8 @@ describe('Render Vue Component test', function() {
     browser.expect(formComponent.property('title')).to.be.a('string').and.equal('A Serious Man');
   });
 
+  it('run accessibilty tests for the component', function() {
+    browser.axeRun()
+  })
+
 });
