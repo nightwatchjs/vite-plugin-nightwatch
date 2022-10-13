@@ -1,62 +1,64 @@
 const fs = require('fs');
 const path = require('path');
 const CDPConnection = require('./src/cdp.js');
-const {createServer: createViteServer} = require('vite');
+const {injectRendererName, injectScript} = require('./src/utils/');
 
 module.exports = function viteNightwatchPlugin(options = {}) {
-  const componentType = options.componentType || 'vue';
   const enableCdpConnection = options.enableCdpConnection || false;
 
-  let defaultRenderPage;
-  switch (componentType) {
-    case 'react':
-      defaultRenderPage = 'src/react_renderer.html';
-      break;
-    default:
-      defaultRenderPage = 'src/vue_renderer.html';
-  }
+  const renderPage = options.renderPage
+    ? path.resolve(options.renderPage)
+    : path.resolve(__dirname, 'src', 'renderer.html');
 
-  defaultRenderPage = path.join('node_modules', 'vite-plugin-nightwatch', defaultRenderPage);
+  const componentType = options.componentType || 'vue';
 
   return (function () {
     let wsUrl;
-    let logger;
     let cdp;
 
     return {
       name: 'nightwatch-plugin',
-      configureServer(server) {
-        server.middlewares.use('/test_render/', (req, res, next) => {
-          // custom handle request...
-          const wsUrlParts = decodeURIComponent(req.url).split('?wsurl=');
-          if (wsUrlParts.length === 2) {
-            wsUrl = wsUrlParts[1];
-          }
 
-          const testRenderer = options.renderPage || defaultRenderPage;
-
-          fs.readFile(testRenderer, 'utf-8', function (err, data) {
-            if (err) {
-              throw err;
-            }
-
-            if (wsUrl && enableCdpConnection) {
-              setTimeout(function() {
-                cdp = new CDPConnection(wsUrl);
-              }, 100)
-            }
-
-            // Transform HTML using Vite plugins.
-            server.transformIndexHtml(req.url, data)
-              .then(result => res.end(result))
-              .catch(err => res.end(err.message))
-          });
-        })
+      configResolved(config) {
+        process.env.BASE_VITE_URL = `http://${config.server.host}:${config.server.port || 5173}`;
       },
 
-      configResolved(info) {
-        logger = info.logger;
+      configureServer(server) {
+        server.middlewares
+          // .use(serveStatic(rendererRoot, { index: false }))
+          .use('/nightwatch', (req, res, _next) => {
+            // custom handle request...
+            const wsUrlParts = decodeURIComponent(req.url).split('?wsurl=');
+            if (wsUrlParts.length === 2) {
+              wsUrl = wsUrlParts[1];
+            }
+
+            fs.readFile(renderPage, { encoding: 'utf-8' }, (error, data) => {
+              if (error) {
+                throw error;
+              }
+
+              if (wsUrl && enableCdpConnection) {
+                setTimeout(function () {
+                  cdp = new CDPConnection(wsUrl);
+                }, 100);
+              }
+
+              const componentPath = new URLSearchParams(req.url.split('?')[1]).get('file');
+              const htmlWithTitle = injectRendererName(data, componentType);
+
+              // Transform HTML using Vite plugins.
+              server
+                .transformIndexHtml(
+                  req.url,
+                  componentPath  ? injectScript(htmlWithTitle, componentType, componentPath) : htmlWithTitle
+                )
+                .then((result) => res.end(result))
+                .catch((err) => res.end(err.message));
+            });
+          });
       }
-    }
+    };
   })();
-}
+};
+

@@ -9,4 +9,4 @@ let element = mount(Component, {
 });
 
 // This will be used by Nightwatch to inspect properties of this component
-window['@component_element'] = element;
+window['@@component_element'] = element;

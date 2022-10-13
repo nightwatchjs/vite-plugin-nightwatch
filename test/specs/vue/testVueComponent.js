@@ -1,11 +1,8 @@
 describe('Render Vue Component test', function() {
-  let formComponent;
 
-  before(async function() {
-    formComponent = await browser.mountVueComponent('/test/components/vue/Form.vue', {});
-  });
+  it('checks the vue component', async function(browser) {
+    const formComponent = await browser.mountVueComponent('/test/components/vue/Form.vue', {});
 
-  it('checks the vue component', function(browser) {
     browser.expect.element(formComponent).to.be.present;
     browser.setValue('#movie-input', 'A Serious Man');
 

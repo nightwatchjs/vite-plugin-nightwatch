@@ -1,17 +1,15 @@
-import {isReact18} from '../../src/utils/react_version.js';
-import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import nightwatchPlugin from '../../index.js'
 
-// https://vitejs.dev/config/
-export default defineConfig({
+export default {
   optimizeDeps: {
-    include: ['react', isReact18() ? 'react-dom/client' : 'react-dom']
+    include: ['react', 'react-dom']
   },
+  server: {},
   plugins: [
     react(),
     nightwatchPlugin({
-      renderPage: './src/react_renderer.html'
+      componentType: 'react'
     })
   ]
-});
+};

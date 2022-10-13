@@ -5,7 +5,7 @@ describe('Vite Nightwatch plugin basic tests', function() {
 
   it('test plugin config with defaults', function(done) {
     fs.readFile = (filename, encoding, callback) => {
-      assert.ok(filename.endsWith('vite-plugin-nightwatch/src/vue_renderer.html'));
+      assert.ok(filename.endsWith('vite-plugin-nightwatch/src/renderer.html'));
       callback(null, '');
     };
 
@@ -23,7 +23,7 @@ describe('Vite Nightwatch plugin basic tests', function() {
 
       middlewares: {
         use(url, fn) {
-          assert.strictEqual(url, '/test_render/');
+          assert.strictEqual(url, '/nightwatch');
 
           const req = {
             url: 'http://localhost'
@@ -39,7 +39,7 @@ describe('Vite Nightwatch plugin basic tests', function() {
 
   it('test plugin config with componentType=react', function(done) {
     fs.readFile = (filename, encoding, callback) => {
-      assert.ok(filename.endsWith('vite-plugin-nightwatch/src/react_renderer.html'));
+      assert.ok(filename.endsWith('vite-plugin-nightwatch/src/renderer.html'));
       callback(null, '');
     };
 
@@ -59,7 +59,7 @@ describe('Vite Nightwatch plugin basic tests', function() {
 
       middlewares: {
         use(url, fn) {
-          assert.strictEqual(url, '/test_render/');
+          assert.strictEqual(url, '/nightwatch');
 
           const req = {
             url: 'http://localhost'
@@ -75,7 +75,7 @@ describe('Vite Nightwatch plugin basic tests', function() {
 
   it('test plugin config with custom renderPage', function(done) {
     fs.readFile = (filename, encoding, callback) => {
-      assert.strictEqual(filename, 'custom_renderer.html');
+      assert.ok(filename.endsWith('custom_renderer.html'));
       callback(null, '');
     };
 
@@ -93,7 +93,7 @@ describe('Vite Nightwatch plugin basic tests', function() {
 
       middlewares: {
         use(url, fn) {
-          assert.strictEqual(url, '/test_render/');
+          assert.strictEqual(url, '/nightwatch');
 
           const req = {
             url: 'http://localhost'
