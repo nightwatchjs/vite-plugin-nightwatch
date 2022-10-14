@@ -20,7 +20,7 @@
   "author": "Andrei Rusu",
   "license": "MIT",
   "dependencies": {
-    "@nightwatch/esbuild-utils": "0.1.7",
+    "@nightwatch/esbuild-utils": "0.1.8",
     "@vue/test-utils": "^2.1.0",
     "assertion-error": "^1.1.0",
     "sinon": "^14.0.0",
