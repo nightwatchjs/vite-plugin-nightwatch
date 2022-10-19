@@ -111,9 +111,9 @@ const component = await browser.mountReactComponent('/src/components/Form.jsx')
 ```
 
 ### - browser.launchComponentRenderer():
-This will call `browser.navigateTo('/test_renderer/')` and open the browser. Needs to be used before the `.importScript()` command, if used.
+This will call `browser.navigateTo('/nightwatch/')` and open the browser. Needs to be used before the `.importScript()` command, if used.
 
-You can also set `launchUrl` as a global at runtime and then the url to be used will be `${browser.globals.launchUrl}/test_renderer`, which makes it possible to set the launch url dynamically. 
+You can also set `launchUrl` as a global at runtime and then the url to be used will be `${browser.globals.launchUrl}/nightwatch`, which makes it possible to set the launch url dynamically. 
 
 ### - browser.importScript(`scriptPath`, `[options]`, `[callback]`):
 **Parameters:**
