@@ -240,10 +240,13 @@ module.exports = class Command {
   }
 
   static _getReactImports() {
+    const { version } = require(path.resolve('node_modules', 'react'));
+    const reactDOMSuffix = version.startsWith('18') ? '/client': '';
+
     return `
-			import '/node_modules/react/umd/react.development.js';
-			import '/node_modules/react-dom/umd/react-dom.development.js';
-		`;
+      import * as React from 'react';
+      import * as ReactDOM from "react-dom${reactDOMSuffix}";
+    `;
   }
 
   /**
