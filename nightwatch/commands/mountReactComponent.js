@@ -2,6 +2,8 @@ const AssertionError = require('assertion-error');
 const fs = require('fs');
 const path = require('path');
 
+const {TMP_TEST_NAME, writeTmpTestFile, removeTmpTestFile} = require('../../src/tmp_file.js');
+
 class NightwatchMountError extends AssertionError {
   constructor(message) {
     super(message);
@@ -46,18 +48,21 @@ module.exports = class Command {
     let beforeMountError;
     let afterMountError;
 
+    await Command._createEntryScriptFile(componentOrName, props, isJSX);
+
     // mount component
     await this.api
-      .execute(function (innerHTML) {
+      .executeAsyncScript(function (fileName, done) {
         function onReady(fn) {if (document.readyState === 'complete' || document.readyState === 'interactive') {setTimeout(fn);} else {document.addEventListener('DOMContentLoaded', fn)}}
         onReady(function() {
           var scriptTag = Object.assign(document.createElement('script'), {
+	        src: `/${fileName}?t=${Math.random().toString(36)}`,
             type: 'module',
-            innerHTML
+	    onload: function() { done(); }
           });
           document.body.appendChild(scriptTag);
         });
-      }, [Command._buildScript(componentOrName, props, isJSX)])
+      }, [TMP_TEST_NAME])
 
       // FIXME: writing the waitUntil outside of the perform using await, breaks the chain
 
@@ -207,6 +212,8 @@ module.exports = class Command {
         done(browserResult);
       }, 100);
     }, [Command.rootElementId]);
+   
+    await removeTmpTestFile();
 
     if (!result || beforeMountError || afterMountError) {
       const err = this.getError('Could not mount the component.');
@@ -331,6 +338,9 @@ module.exports = class Command {
 
   static _buildScript(Component, props, isJSX) {
     return `
+      // THIS IS GENERATED FILE. DO NOT EDIT IT!
+      // THIS FILE SHOULD NOT BE ADDED TO THE VERSION CONTROL SYSTEM.
+
       ${Command._getReactImports()}
       ${Command._addDescribeMocks(isJSX)}
       
@@ -364,5 +374,21 @@ module.exports = class Command {
       window.__$$PlayFnError = null;
       window.__$$PlayFnDone = false;         
     `;
+  }
+
+  /**
+   * Creates a content for the script that will load component and mount
+   * it into the renderer's canvas. For that purpose the file will be created
+   * in the current working directory. That file has to be deleted after a testing is done.
+   *
+   * @param {string|ComponentDescription|(() => JSX.Element)} componentOrName
+   * @param {unknown} props
+   * @param {boolean} isJSX
+   * @returns {Promise<void>}
+   */
+  static async _createEntryScriptFile(componentOrName, props, isJSX) {
+    const content = Command._buildScript(componentOrName, props, isJSX);
+
+    await writeTmpTestFile(content);
   }
 };
