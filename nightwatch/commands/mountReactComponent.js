@@ -1,6 +1,7 @@
 const AssertionError = require('assertion-error');
 const fs = require('fs');
 const path = require('path');
+const REACT_ENTRY_POINT = '/node_modules/vite-plugin-nightwatch/src/react_index.js';
 
 class NightwatchMountError extends AssertionError {
   constructor(message) {
@@ -241,8 +242,8 @@ module.exports = class Command {
 
   static _getReactImports() {
     return `
-			import '/node_modules/react/umd/react.development.js';
-			import '/node_modules/react-dom/umd/react-dom.development.js';
+			import ReactLibs from '${REACT_ENTRY_POINT}';
+      const {React, ReactDOM} = ReactLibs;
 		`;
   }
 
