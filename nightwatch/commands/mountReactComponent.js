@@ -241,10 +241,11 @@ module.exports = class Command {
   }
 
   static _getReactImports() {
+
     return `
 			import ReactLibs from '${REACT_ENTRY_POINT}';
       const {React, ReactDOM} = ReactLibs;
-		`;
+    `;
   }
 
   /**
