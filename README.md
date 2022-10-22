@@ -66,7 +66,7 @@ export default {
 }
 ```
 
-## API Commands:
+## API Commands
 This plugin includes a few Nightwatch commands which can be used while writing tests.
 
 ### - browser.mountVueComponent(`componentPath`, `[options]`, `[callback]`):
