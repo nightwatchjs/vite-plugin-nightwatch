@@ -15,7 +15,7 @@ npm install vite-plugin-nightwatch
 Update your [Vite configuration](https://vitejs.dev/config/):
 
 ### 
-```jsß
+```js
 import nightwatchPlugin from 'vite-plugin-nightwatch'
 
 export default {
@@ -143,7 +143,7 @@ let element = mount(Component, {
 });
 
 // This will be used by Nightwatch to inspect properties of this component
-window['@component_element'] = element;
+window['@@component_element'] = element;
 ```
 
 ## Debugging Component Tests
