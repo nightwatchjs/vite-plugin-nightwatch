@@ -42,28 +42,28 @@ Specify the type of component to be tested. Possible values:
 - `react`
 
 ```js
-export default defineConfig({
+export default {
   plugins: [
     // ... other plugins, such as vue() or react()
     nightwatchPlugin({
       componentType: 'vue'
     })
   ]
-})
+}
 ```
 
 ### - renderPage:
 Specify the path to a custom test renderer to be used. Default renderers are included in the package for both Vue and React components, but this option can overwrite that value.
 
 ```js
-export default defineConfig({
+export default {
   plugins: [
     // ... other plugins, such as vue() or react()
     nightwatchPlugin({
       renderPage: './src/test_renderer.html'
     })
   ]
-})
+}
 ```
 
 ## API Commands:
