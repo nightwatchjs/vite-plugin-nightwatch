@@ -8,24 +8,24 @@ module.exports = class Command {
       }
       scriptEl.src = scriptFileName;
       document.body.appendChild(scriptEl);
-    }
+    };
 
     const element = await this.api
       .execute(scriptFn, [scriptFileName, scriptType])
       .pause(500)
       .execute(function() {
-        return document.querySelectorAll('#app')[0].firstElementChild
+        return document.querySelectorAll('#app')[0].firstElementChild;
       }, [], (result) => {
         const componentInstance = this.api.createElement(result.value, {
           isComponent: true,
           type: componentType
         });
 
-        cb(componentInstance)
+        cb(componentInstance);
 
         return componentInstance;
       });
 
     return element;
   }
-}
+};

@@ -23,7 +23,7 @@ describe('Vite Nightwatch plugin basic tests', function() {
 
       middlewares: {
         use(url, fn) {
-          assert.strictEqual(url, '/nightwatch');
+          assert.strictEqual(url, '/_nightwatch');
 
           const req = {
             url: 'http://localhost'
@@ -59,7 +59,7 @@ describe('Vite Nightwatch plugin basic tests', function() {
 
       middlewares: {
         use(url, fn) {
-          assert.strictEqual(url, '/nightwatch');
+          assert.strictEqual(url, '/_nightwatch');
 
           const req = {
             url: 'http://localhost'
@@ -93,7 +93,7 @@ describe('Vite Nightwatch plugin basic tests', function() {
 
       middlewares: {
         use(url, fn) {
-          assert.strictEqual(url, '/nightwatch');
+          assert.strictEqual(url, '/_nightwatch');
 
           const req = {
             url: 'http://localhost'

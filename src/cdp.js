@@ -1,19 +1,18 @@
-const WebSocket = require('ws')
+const WebSocket = require('ws');
 
 module.exports = class CDPConnection {
   constructor(url) {
-    this.createCDPConnection(url)
+    this.createCDPConnection(url);
   }
 
   createCDPConnection(url) {
-    this._wsConnection = new WebSocket(url)
+    this._wsConnection = new WebSocket(url);
     this._wsConnection.on('open', () => {
-      console.info('CDP connected')
       this.enableRunTime();
-    })
+    });
 
     this._wsConnection.on('error', (error) => {
-      console.error('CDP Error', error)
+      console.error('CDP Error', error);
     });
   }
 
@@ -31,7 +30,7 @@ module.exports = class CDPConnection {
             args,
             stackTrace
           };
-
+          // eslint-disable-next-line
           console.log('Console Log:', eventData);
         }
           break;
@@ -43,6 +42,7 @@ module.exports = class CDPConnection {
             timestamp: new Date(timestamp)
           };
 
+          // eslint-disable-next-line
           console.log('Exception Thrown:', eventData);
         }
       }
@@ -54,11 +54,11 @@ module.exports = class CDPConnection {
   execute(method, id, params, callback) {
     const message = {
       method,
-      id: id,
-    }
+      id: id
+    };
 
-    const mergedMessage = Object.assign({ params: params }, message)
+    const mergedMessage = Object.assign({params: params}, message);
 
-    this._wsConnection.send(JSON.stringify(mergedMessage), callback)
+    this._wsConnection.send(JSON.stringify(mergedMessage), callback);
   }
-}
+};

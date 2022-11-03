@@ -1,5 +1,5 @@
 const reactScript = (path) =>
-	`
+  `
 		import '/node_modules/react/umd/react.development.js';
 		import '/node_modules/react-dom/umd/react-dom.development.js';
       
@@ -25,7 +25,7 @@ const reactScript = (path) =>
 	`;
 
 const vueScript = (path) =>
-	`
+  `
 		import {mount} from '/node_modules/@vue/test-utils/dist/vue-test-utils.esm-browser.js';
 		import Component from '${path}';
 		
@@ -39,10 +39,10 @@ const vueScript = (path) =>
 	`;
 
 module.exports = function (content, componentType, path) {
-	return content.replace(
-		'<!-- script -->',
-		`<script type="module">
+  return content.replace(
+    '<!-- script -->',
+    `<script type="module">
 			${componentType === 'react' ? reactScript(path) : vueScript(path)}
 		</script>`
-	);
-}
+  );
+};

@@ -7,7 +7,6 @@ class Form extends React.Component {
   }
 
   handleSubmit = (e) => {
-    debugger
     e.preventDefault();
     if (!this.state.name.trim()) {
       return;

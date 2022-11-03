@@ -26,14 +26,14 @@ module.exports = function viteNightwatchPlugin(options = {}) {
       configureServer(server) {
         server.middlewares
           // .use(serveStatic(rendererRoot, { index: false }))
-          .use('/nightwatch', (req, res, _next) => {
+          .use('/_nightwatch', (req, res, _next) => {
             // custom handle request...
             const wsUrlParts = decodeURIComponent(req.url).split('?wsurl=');
             if (wsUrlParts.length === 2) {
               wsUrl = wsUrlParts[1];
             }
 
-            fs.readFile(renderPage, { encoding: 'utf-8' }, (error, data) => {
+            fs.readFile(renderPage, {encoding: 'utf-8'}, (error, data) => {
               if (error) {
                 throw error;
               }

@@ -26,8 +26,6 @@ module.exports = class Command {
   }
 
   async command(componentName, opts = {}, cb = function() {}) {
-    const isJSX = typeof componentOrName == 'object' && (componentOrName.path.endsWith('.jsx') || componentOrName.path.endsWith('.tsx'));
-
     const {
       hooksRetryTimeout = 10000,
       hooksRetryInterval = 250,
@@ -41,7 +39,7 @@ module.exports = class Command {
       .pause(500)
 
       .execute(function (innerHTML) {
-        function onReady(fn) {if (document.readyState === 'complete' || document.readyState === 'interactive') {setTimeout(fn);} else {document.addEventListener('DOMContentLoaded', fn)}}
+        function onReady(fn) {if (document.readyState === 'complete' || document.readyState === 'interactive') {setTimeout(fn)} else {document.addEventListener('DOMContentLoaded', fn)}}
         onReady(function() {
           var scriptTag = Object.assign(document.createElement('script'), {
             type: 'module',
@@ -49,7 +47,7 @@ module.exports = class Command {
           });
           document.body.appendChild(scriptTag);
         });
-      }, [Command._buildScript(componentName, opts, isJSX)])
+      }, [Command._buildScript(componentName, opts)])
 
       .waitUntil(async () => {
         if (this.client.argv.debug) {
@@ -95,7 +93,7 @@ module.exports = class Command {
     }
 
     const result = await this.api.execute(function() {
-      return document.querySelectorAll('#app')[0].firstElementChild
+      return document.querySelectorAll('#app')[0].firstElementChild;
     }, []);
 
     if (!result) {
@@ -112,14 +110,6 @@ module.exports = class Command {
     cb(componentInstance);
 
     return componentInstance;
-  }
-
-  static _addDescribeMocks(isJSX) {
-    if (!isJSX) {
-      return '';
-    }
-
-    return 'import "/node_modules/vite-plugin-nightwatch/nightwatch/describe.js";';
   }
 
   static _getVueImports(plugins = {}) {
@@ -160,7 +150,7 @@ module.exports = class Command {
 
     let mockFetchItemsContent = '';
     if (definitions.length > 0) {
-      mockContent = `import sinon from '/node_modules/sinon/pkg/sinon-esm.js';`;
+      mockContent = 'import sinon from \'/node_modules/sinon/pkg/sinon-esm.js\';';
       mockFetchItemsContent = definitions.reduce((prev, mockUrl) => {
         const {body, type = 'fetch'} = mocks[mockUrl];
         if (type === 'fetch') {
@@ -185,11 +175,11 @@ module.exports = class Command {
     return mockContent;
   }
 
-  static _buildScript(componentName, opts = {}, isJSX = false) {
+  static _buildScript(componentName, opts = {}) {
     let pluginsContent = '';
 
     if (opts.plugins) {
-      const definitions = Object.keys(plugins);
+      const definitions = Object.keys(opts.plugins);
       pluginsContent = definitions.join(',');
     }
 
@@ -212,4 +202,4 @@ module.exports = class Command {
       window.__$$PlayFnDone = false;           
     `;
   }
-}
+};

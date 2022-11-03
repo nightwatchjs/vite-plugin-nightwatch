@@ -2,7 +2,7 @@ const AssertionError = require('assertion-error');
 const fs = require('fs');
 const path = require('path');
 
-const {TMP_TEST_NAME, writeTmpTestFile, removeTmpTestFile} = require('../../src/tmp_file.js');
+const {TMP_TEST_NAME, writeTmpTestFile} = require('../../src/tmp_file.js');
 
 class NightwatchMountError extends AssertionError {
   constructor(message) {
@@ -26,7 +26,7 @@ module.exports = class Command {
 
     err.showTrace = false;
     err.help = [
-      'run nightwatch with --devtools and --debug flags (Chrome only)',
+      'run nightwatch with --devtools and --debug flags (Chrome/Edge only)',
       'investigate the error in the browser console'
     ];
 
@@ -34,9 +34,11 @@ module.exports = class Command {
   }
 
   async command(componentOrName, props = null, onInstanceAvailable = function () {}) {
-    const isJSX = typeof componentOrName == 'object' && (componentOrName.path.endsWith('.jsx') || componentOrName.path.endsWith('.tsx'));
+    const isObject = typeof componentOrName == 'object' && componentOrName.path;
+    const componentPath = isObject ? componentOrName.path : componentOrName;
+    const isJSX = isObject && (componentOrName.path.endsWith('.jsx') || componentOrName.path.endsWith('.tsx'));
 
-    await this.api.launchComponentRenderer().pause(100);
+    const fileName = componentPath ? `${path.parse(componentPath).name.toLowerCase()}__${Math.floor(Math.random() * 1000)}__imports.js` : TMP_TEST_NAME;
 
     const {
       hooksRetryTimeout = 10000,
@@ -45,28 +47,33 @@ module.exports = class Command {
       playFnRetryInterval = 250
     } = this.pluginSettings;
 
-    let beforeMountError;
-    let afterMountError;
+    let preRenderError;
+    let postRenderError;
 
-    await Command._createEntryScriptFile(componentOrName, props, isJSX);
+    await this.api.perform(async function() {
+      await Command._createEntryScriptFile({fileName, componentOrName, props, isJSX});
+    }).launchComponentRenderer().pause(100);
 
     // mount component
     await this.api
       .executeAsyncScript(function (fileName, done) {
-        function onReady(fn) {if (document.readyState === 'complete' || document.readyState === 'interactive') {setTimeout(fn);} else {document.addEventListener('DOMContentLoaded', fn)}}
+        function onReady(fn) {if (document.readyState === 'complete' || document.readyState === 'interactive') {setTimeout(fn)} else {document.addEventListener('DOMContentLoaded', fn)}}
+
         onReady(function() {
-          var scriptTag = Object.assign(document.createElement('script'), {
-	        src: `/${fileName}?t=${Math.random().toString(36)}`,
-            type: 'module',
-	    onload: function() { done(); }
-          });
+          var scriptTag = document.createElement('script');
+          scriptTag.src = `/nightwatch/.cache/${fileName}?t=${Math.random().toString(36)}`;
+          scriptTag.type = 'module';
+          scriptTag.onload = function () {
+            done();
+          };
+
           document.body.appendChild(scriptTag);
         });
-      }, [TMP_TEST_NAME])
+      }, [fileName])
 
-      // FIXME: writing the waitUntil outside of the perform using await, breaks the chain
+    // FIXME: writing the waitUntil outside of the perform using await, breaks the chain
 
-      // waiting for the beforeMount (if any) to finish
+      // waiting for the preRender (if any) to finish
       .waitUntil(async () => {
         if (this.client.argv.debug) {
           return true;
@@ -81,8 +88,8 @@ module.exports = class Command {
         });
 
         if (result && typeof result.error == 'string') {
-          beforeMountError = new Error('Error while running beforeMount(): ' + result.error);
-          beforeMountError.showTrace = false;
+          preRenderError = new Error('Error while running preRender(): ' + result.error);
+          preRenderError.showTrace = false;
         }
 
         return !!result;
@@ -130,98 +137,96 @@ module.exports = class Command {
     }, playFnTimeout, playFnRetryInterval, `time out reached (${playFnTimeout}ms) while waiting for the play() function to complete.`)
 
     // checking for errors in the play function
-    .executeAsync(function (done) {
-      setTimeout(function() {
-        if (window.__$$NightwatchDescribe) {
-          return done('DescribeError');
+      .executeAsync(function (done) {
+        setTimeout(function() {
+          if (window.__$$NightwatchDescribe) {
+            return done('DescribeError');
+          }
+
+          if (window.__$$PlayFnError) {
+            return done('Error in .play() function: ' + window.__$$PlayFnError.message);
+          }
+
+          done('');
+        }, 500);
+      }, [], function(result) {
+        if (result && result.value === 'DescribeError') {
+          const err = new Error('Writing describe in JSX tests is not supported yet.');
+          err.link = 'https://nightwatchjs.org/guide/';
+          err.showTrace = false;
+
+          throw err;
         }
 
-        if (window.__$$PlayFnError) {
-          return done('Error in .play() function: ' + window.__$$PlayFnError.message);
+        if (result && result.value !== '') {
+          const err = new Error(result.value);
+          err.showTrace = false;
+
+          throw err;
         }
+      })
 
-        done('');
-      }, 500);
-    }, [], function(result) {
-      if (result && result.value === 'DescribeError') {
-        const err = new Error('Writing describe in JSX tests is not supported yet.');
-        err.link = 'https://nightwatchjs.org/guide/';
-        err.showTrace = false;
-
-        throw err;
-      }
-
-      if (result && result.value !== '') {
-        const err = new Error(result.value);
-        err.showTrace = false;
-
-        throw err;
-      }
-    })
-
-    // run the afterMount()
-    .execute(function(innerHTML) {
-      var scriptTag = Object.assign(document.createElement('script'), {
-        type: 'module',
-        innerHTML
-      });
-      document.body.appendChild(scriptTag);
-    }, [`
+      // run the postRender()
+      .execute(function(innerHTML) {
+        var scriptTag = Object.assign(document.createElement('script'), {
+          type: 'module',
+          innerHTML
+        });
+        document.body.appendChild(scriptTag);
+      }, [`
         const Component = window['@component_class'];
         window.__$$AfterMountDone = false;
         window.__$$AfterMountError = null;
-        if (Component && typeof Component.afterMount == 'function') {
+        if (Component && typeof Component.postRender == 'function') {
           try {
-            await Component.afterMount();
+            await Component.postRender();
           } catch (err) {
             window.__$$AfterMountError = err.stack;
-            throw new Error('Error while running afterMount(): ' + err.stack);
+            throw new Error('Error while running postRender(): ' + err.stack);
           }
         }
         window.__$$AfterMountDone = true;
       `])
 
-    // waiting for afterMount hook to complete
-    .waitUntil(async () => {
-      const result = await this.api.execute(function() {
-        if (window.__$$AfterMountError) {
-          return window.__$$AfterMountError;
+      // waiting for postRender hook to complete
+      .waitUntil(async () => {
+        const result = await this.api.execute(function() {
+          if (window.__$$AfterMountError) {
+            return window.__$$AfterMountError;
+          }
+
+          return window.__$$AfterMountDone === true;
+        });
+
+        if (typeof result == 'string') {
+          postRenderError = new Error('Error while running postRender(): ' + result);
+          postRenderError.showTrace = false;
+
+          return true;
         }
 
-        return window.__$$AfterMountDone === true;
-      });
+        return result === true;
+      }, hooksRetryTimeout, hooksRetryInterval, `time out reached (${hooksRetryTimeout}ms) while waiting for postRender() hook to complete.`)
 
-      if (typeof result == 'string') {
-        afterMountError = new Error('Error while running afterMount(): ' + result);
-        afterMountError.showTrace = false;
-
-        return true;
-      }
-
-      return result === true;
-    }, hooksRetryTimeout, hooksRetryInterval, `time out reached (${hooksRetryTimeout}ms) while waiting for afterMount() hook to complete.`)
-
-    // get the command result
-    .executeAsyncScript(function (rootElementId, done) {
-      setTimeout(function() {
-        var canvas = document.getElementById(rootElementId);
-        var browserResult = {
-          element: canvas ? canvas.firstElementChild : null,
-          result: window['@@playfn_result']
-        };
-        done(browserResult);
-      }, 100);
-    }, [Command.rootElementId]);
+      // get the command result
+      .executeAsyncScript(function (rootElementId, done) {
+        setTimeout(function() {
+          var canvas = document.getElementById(rootElementId);
+          var browserResult = {
+            element: canvas ? canvas.firstElementChild : null,
+            result: window['@@playfn_result']
+          };
+          done(browserResult);
+        }, 100);
+      }, [Command.rootElementId]);
    
-    await removeTmpTestFile();
-
-    if (!result || beforeMountError || afterMountError) {
+    if (!result || preRenderError || postRenderError) {
       const err = this.getError('Could not mount the component.');
-      if (beforeMountError) {
-        err.detailedErr = beforeMountError.message;
-      } else if (afterMountError) {
-        err.detailedErr = afterMountError.message;
-        err.message = 'Component mounted with errors'
+      if (preRenderError) {
+        err.detailedErr = preRenderError.message;
+      } else if (postRenderError) {
+        err.detailedErr = postRenderError.message;
+        err.message = 'Component mounted with errors';
       }
 
       return err;
@@ -229,7 +234,7 @@ module.exports = class Command {
 
     const element = this.api.createElement(result.element, {
       isComponent: true,
-      type: 'react',
+      type: 'react'
     });
 
     const playFnResult = result.result;
@@ -243,11 +248,11 @@ module.exports = class Command {
     return {
       element,
       result: playFnResult
-    }
+    };
   }
 
   static _getReactImports() {
-    const { version } = require(path.resolve('node_modules', 'react'));
+    const {version} = require(path.resolve('node_modules', 'react'));
     const reactDOMSuffix = version.startsWith('18') ? '/client': '';
 
     return `
@@ -275,12 +280,12 @@ module.exports = class Command {
   }
 
   static _createIndexImport() {
-    if (fs.existsSync(path.resolve('./nightwatch_index.jsx'))) {
-      return 'import "/nightwatch_index.jsx";';
+    if (fs.existsSync(path.resolve('./nightwatch/index.jsx'))) {
+      return 'import "/nightwatch/index.jsx";';
     }
 
-    if (fs.existsSync(path.resolve('./nightwatch_index.tsx'))) {
-      return 'import "/nightwatch_index.tsx";';
+    if (fs.existsSync(path.resolve('./nightwatch/index.tsx'))) {
+      return 'import "/nightwatch/index.tsx";';
     }
 
     return '';
@@ -292,19 +297,19 @@ module.exports = class Command {
    * @returns {string}
    */
   static _createComponentImport(component) {
-    if (typeof component === "string") {
+    if (typeof component === 'string') {
       return `import Component from '${component}';`;
     }
 
-    if (typeof component === "object") {
+    if (typeof component === 'object') {
       return `import ${
         component.exportName !== 'default' ? '_csfDescription,': ''
       } { ${
-        component.exportName || "default"
+        component.exportName || 'default'
       } as Component } from '${component.path}';`;
     }
 
-    return `const Component = ${component.toString()};`
+    return `const Component = ${component.toString()};`;
   }
 
   static _addDescribeMocks(isJSX) {
@@ -323,7 +328,7 @@ module.exports = class Command {
    * @returns {string}
    */
   static _createProps(props = {}) {
-    const propsToInsert = typeof props === "function" ? `(${props.toString()})()` : JSON.stringify(props);
+    const propsToInsert = typeof props === 'function' ? `(${props.toString()})()` : JSON.stringify(props);
 
     return `
 			const isComponentDefaultExported = typeof _csfDescription === 'undefined';
@@ -351,12 +356,12 @@ module.exports = class Command {
       ${Command._createProps(props)}
       
       window.__$$BeforeMountError = false;
-      if (typeof Component.beforeMount == 'function') {
+      if (typeof Component.preRender == 'function') {
         try {
-          await Component.beforeMount();
+          await Component.preRender();
         } catch (err) {
           window.__$$BeforeMountError = err.stack;
-          throw new Error('Error while running beforeMount(): ' + err.stack);
+          throw new Error('Error while running preRender(): ' + err.stack);
         }
       }
       
@@ -382,13 +387,14 @@ module.exports = class Command {
    * in the current working directory. That file has to be deleted after a testing is done.
    *
    * @param {string|ComponentDescription|(() => JSX.Element)} componentOrName
-   * @param {unknown} props
+   * @param {object} [props]
+   * @param {string} fileName
    * @param {boolean} isJSX
    * @returns {Promise<void>}
    */
-  static async _createEntryScriptFile(componentOrName, props, isJSX) {
+  static _createEntryScriptFile({componentOrName, props, fileName, isJSX}) {
     const content = Command._buildScript(componentOrName, props, isJSX);
 
-    await writeTmpTestFile(content);
+    return writeTmpTestFile({content, fileName});
   }
 };

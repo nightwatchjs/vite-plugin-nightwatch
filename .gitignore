@@ -10,3 +10,4 @@ tests_output
 # Vim's swap files
 *.swp
 *.swo
+.cache
