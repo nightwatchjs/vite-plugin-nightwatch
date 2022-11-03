@@ -222,7 +222,7 @@ npm run test-react
 ## License
 MIT
 
-[build-badge]: https://github.com/nightwatchjs/vite-plugin-nightwatch/actions/workflows/vue-tests.yml/badge.svg?branch=main
+[build-badge]: https://github.com/nightwatchjs/vite-plugin-nightwatch/actions/workflows/tests.yml/badge.svg?branch=main
 [build]: https://github.com/nightwatchjs/vite-plugin-nightwatch/actions/workflows/vue-tests.yml
 [version-badge]: https://img.shields.io/npm/v/vite-plugin-nightwatch.svg?style=flat-square
 [package]: https://www.npmjs.com/package/vite-plugin-nightwatch
