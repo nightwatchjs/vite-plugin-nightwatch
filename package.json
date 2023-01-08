@@ -1,13 +1,13 @@
 {
   "name": "vite-plugin-nightwatch",
   "version": "0.3.2",
-  "description": "Component testing plugin that integrates Vite with Nightwatch.js. Supports Vue and React components.",
+  "description": "Component testing plugin that integrates Vite with Nightwatch.js. Supports Vue and React components with more to come soon.",
   "main": "index.js",
   "scripts": {
     "eslint": "eslint index.js src nightwatch",
-    "test": "nightwatch --env vue",
+    "test": "nightwatch --env vue --headless",
     "test-unit": "mocha test/unit",
-    "test-react": "nightwatch --env react"
+    "test-react": "nightwatch --env react --headless"
   },
   "keywords": [
     "nightwatch",
@@ -21,8 +21,8 @@
   "author": "Andrei Rusu",
   "license": "MIT",
   "dependencies": {
-    "@nightwatch/esbuild-utils": "0.1.10",
-    "@vue/test-utils": "^2.1.0",
+    "@nightwatch/esbuild-utils": "0.2.0",
+    "@vue/test-utils": "^2.2.7",
     "assertion-error": "^1.1.0",
     "mkdirp": "^1.0.4",
     "sinon": "^14.0.0",
@@ -36,17 +36,17 @@
     "LICENSE"
   ],
   "devDependencies": {
-    "@vitejs/plugin-react": "^2.1.0",
-    "@vitejs/plugin-vue": "^3.1.0",
+    "@vitejs/plugin-react": "^3.0.1",
+    "@vitejs/plugin-vue": "^4.0.0",
     "chromedriver": "^107.0.3",
     "eslint": "^8.26.0",
     "mocha": "^9.2.0",
     "mockery": "^2.1.0",
-    "nightwatch": "^2.4.1",
-    "nightwatch-axe-verbose": "^2.0.3",
-    "react": "18.2.0",
+    "nightwatch": "^2.6.7-preview.2",
+    "nightwatch-axe-verbose": "^2.1.0",
+    "react": "^18.2.0",
     "react-dom": "18.2.0",
-    "vite": "^3.1.3",
-    "vue": "^3.2.39"
+    "vite": "^4.0.4",
+    "vue": "^3.2.45"
   }
 }

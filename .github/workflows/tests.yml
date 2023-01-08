@@ -28,7 +28,7 @@ jobs:
         run: npm run test-unit
 
       - name: Run Vue.js component tests
-        run: npm test -- --headless
+        run: npm test
 
       - name: Run React component tests
-        run: npm run test-react -- --headless
+        run: npm run test-react

@@ -25,30 +25,37 @@ module.exports = class Command {
     return err;
   }
 
+  async mountComponent(componentName, opts, isRetry = false) {
+    this.api.execute(function (innerHTML) {
+      function onReady(fn) {if (document.readyState === 'complete' || document.readyState === 'interactive') {setTimeout(fn)} else {document.addEventListener('DOMContentLoaded', fn)}}
+      onReady(function() {
+        var scriptTag = Object.assign(document.createElement('script'), {
+          type: 'module',
+          innerHTML
+        });
+        document.body.appendChild(scriptTag);
+      });
+    }, [Command._buildScript(componentName, opts)], async (result) => {
+      if (result && (result.error instanceof Error) && !isRetry) {
+        return this.mountComponent(componentName, opts, true);
+      }
+
+      return result;
+    });
+  }
+
   async command(componentName, opts = {}, cb = function() {}) {
     const {
       hooksRetryTimeout = 10000,
-      hooksRetryInterval = 250,
+      hooksRetryInterval = 150,
       playFnTimeout = 20000,
-      playFnRetryInterval = 250
+      playFnRetryInterval = 100
     } = this.pluginSettings;
 
+    await this.api.launchComponentRenderer();
+    await this.mountComponent(componentName, opts);
 
-    const renderedElement = await this.api
-      .launchComponentRenderer()
-      .pause(500)
-
-      .execute(function (innerHTML) {
-        function onReady(fn) {if (document.readyState === 'complete' || document.readyState === 'interactive') {setTimeout(fn)} else {document.addEventListener('DOMContentLoaded', fn)}}
-        onReady(function() {
-          var scriptTag = Object.assign(document.createElement('script'), {
-            type: 'module',
-            innerHTML
-          });
-          document.body.appendChild(scriptTag);
-        });
-      }, [Command._buildScript(componentName, opts)])
-
+    await this.api
       .waitUntil(async () => {
         if (this.client.argv.debug) {
           return true;
@@ -88,8 +95,6 @@ module.exports = class Command {
       await this.api.debug();
     } else if (this.client.argv.preview) {
       await this.api.pause();
-    } else {
-      await this.api.pause(500);
     }
 
     const result = await this.api.execute(function() {
