@@ -1,5 +1,6 @@
 const AssertionError = require('assertion-error');
 const fs = require('fs');
+const {types} = require('util');
 const path = require('path');
 
 const {TMP_TEST_NAME, writeTmpTestFile} = require('../../src/tmp_file.js');
@@ -272,6 +273,10 @@ module.exports = class Command {
    * @returns {string}
    */
   static _createProps(props = {}) {
+    if (props && types.isProxy(props) && props.originalTarget) {
+      props = props.originalTarget;
+    }
+
     const propsToInsert = typeof props === 'function' ? `(${props.toString()})()` : JSON.stringify(props);
 
     return `
