@@ -80,8 +80,8 @@ module.exports = class Command {
 
     // mount component
     await this.mountComponent(fileName);
-      // FIXME: writing the waitUntil outside of the perform using await, breaks the chain
-      // waiting for the preRender (if any) to finish
+    // FIXME: writing the waitUntil outside of the perform using await, breaks the chain
+    // waiting for the preRender (if any) to finish
     await this.api
       // run the play() function
       .execute(function(innerHTML) {
