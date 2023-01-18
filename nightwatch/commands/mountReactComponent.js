@@ -164,7 +164,7 @@ module.exports = class Command {
         }, 100);
       }, [Command.rootElementId]);
    
-    if (!result || preRenderError || postRenderError) {
+    if (!result || !result.element || preRenderError || postRenderError) {
       const err = this.getError('Could not mount the component.');
       if (preRenderError) {
         err.detailedErr = preRenderError.message;
