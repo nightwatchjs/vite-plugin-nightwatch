@@ -35,6 +35,9 @@ module.exports = class Command {
   }
 
   async mountComponent(fileName, isRetry = false) {
+    if (!isRetry) {
+      await this.api.pause(200);
+    }
     await this.api.executeAsyncScript(function (fileName, done) {
       function onReady(fn) {if (document.readyState === 'complete' || document.readyState === 'interactive') {setTimeout(fn)} else {document.addEventListener('DOMContentLoaded', fn)}}
 
