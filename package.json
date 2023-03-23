@@ -27,6 +27,7 @@
   "license": "MIT",
   "dependencies": {
     "@nightwatch/esbuild-utils": "0.2.1",
+    "@types/nightwatch": "^2.3.22",
     "@vue/test-utils": "^2.3.2",
     "assertion-error": "^1.1.0",
     "mkdirp": "^2.1.6",
