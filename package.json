@@ -9,6 +9,10 @@
     "test-unit": "mocha test/unit",
     "test-react": "nightwatch --env react --headless"
   },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:nightwatchjs/vite-plugin-nightwatch.git"
+  },
   "keywords": [
     "nightwatch",
     "nightwatch.js",
@@ -18,6 +22,7 @@
     "vue",
     "react"
   ],
+  "types": "index.d.ts",
   "author": "Andrei Rusu",
   "license": "MIT",
   "dependencies": {
