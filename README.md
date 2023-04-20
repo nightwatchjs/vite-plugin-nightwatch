@@ -69,10 +69,11 @@ export default {
 ## API Commands
 This plugin includes a few Nightwatch commands which can be used while writing tests.
 
-### - browser.mountVueComponent(`componentPath`, `[options]`, `[callback]`):
+### - browser.mountVueComponent(`componentPath` ,`[options]`, `[callback]`):
 **Parameters:**
 - `componentPath` – location of the component file (`.vue`) to be mounted
 - `options` – this can include:
+  - `props` - properties to be passed to the Vue component, this will be serialized to JSON
   - `plugins`: if needed, a store (VueX or Pinia) and a router can be loaded together with the component
   - `mocks`: this can be a list of url calls that can be mocked (will be passed to [sinon](https://sinonjs.org/) automatically); at the moment only [Fetch API](https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API) calls can be mocked, but XHR support will be added soon.  
 - `callback` – an optional callback function which will be called with the component element
@@ -230,4 +231,3 @@ MIT
 [license]: https://github.com/nightwatchjs/vite-plugin-nightwatch/blob/main/LICENSE
 [discord-badge]: https://img.shields.io/discord/618399631038218240.svg?color=7389D8&labelColor=6A7EC2&logo=discord&logoColor=ffffff&style=flat-square
 [discord]: https://discord.gg/SN8Da2X
-
