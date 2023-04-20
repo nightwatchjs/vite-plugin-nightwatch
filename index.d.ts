@@ -1,5 +1,8 @@
 import { NightwatchAPI, Element } from 'nightwatch';
+import { MountingOptions } from '@vue/test-utils';
 type RecordObject = Record<string, any>;
+
+type GlobalMountOptions = NonNullable<MountingOptions<any>['global']>;
 
 declare module 'nightwatch' {
   interface NightwatchAPI {
@@ -15,7 +18,11 @@ declare module 'nightwatch' {
     ): Awaitable<this, Element>;
     mountVueComponent(
       componentPath: string,
-      options?: { plugin?: RecordObject; mocks?: RecordObject },
+      options?: {
+        props?: Pick<MountingOptions<any>, 'props'>;
+        plugin?: Pick<GlobalMountOptions, 'plugins'>;
+        mocks?: Pick<GlobalMountOptions, 'mocks'>;
+      },
       callback?: (this: NightwatchAPI, result: Element) => void
     ): Awaitable<this, Element>;
     launchComponentRenderer(): this;
