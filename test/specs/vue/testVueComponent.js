@@ -16,4 +16,10 @@ describe('Render Vue Component test', function() {
     browser.expect(formComponent.property('title')).to.be.a('string').and.equal('A Serious Man');
   });
 
+  it('checks the welcome component', async function (browser) {
+    const welcomeComponent = await browser.mountVueComponent('/test/components/vue/Welcome.vue', {props: {username: 'John Doe'}});
+
+    browser.expect.element(welcomeComponent).to.be.present;
+    browser.expect.element('h1').text.to.contain('John Doe');
+  });
 });

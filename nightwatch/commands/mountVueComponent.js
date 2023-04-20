@@ -196,6 +196,7 @@ module.exports = class Command {
       
       let element = mount(Component, {
         attachTo: document.getElementById('app'),
+        props: ${JSON.stringify(opts.props)},
         global: {
           plugins: [${pluginsContent}]
         }
