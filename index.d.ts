@@ -1,6 +1,5 @@
 import { NightwatchAPI, Element } from 'nightwatch';
 import { MountingOptions } from '@vue/test-utils';
-type RecordObject = Record<string, any>;
 
 type GlobalMountOptions = NonNullable<MountingOptions<any>['global']>;
 
