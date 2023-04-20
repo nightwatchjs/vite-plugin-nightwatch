@@ -25,7 +25,7 @@ module.exports = class Command {
     return err;
   }
 
-  async mountComponent(componentName, opts, isRetry = false) {
+  async mountComponent(componentName, props, opts, isRetry = false) {
     this.api.execute(function (innerHTML) {
       function onReady(fn) {if (document.readyState === 'complete' || document.readyState === 'interactive') {setTimeout(fn)} else {document.addEventListener('DOMContentLoaded', fn)}}
       onReady(function() {
@@ -35,16 +35,16 @@ module.exports = class Command {
         });
         document.body.appendChild(scriptTag);
       });
-    }, [Command._buildScript(componentName, opts)], async (result) => {
+    }, [Command._buildScript(componentName, props, opts)], async (result) => {
       if (result && (result.error instanceof Error) && !isRetry) {
-        return this.mountComponent(componentName, opts, true);
+        return this.mountComponent(componentName, props, opts, true);
       }
 
       return result;
     });
   }
 
-  async command(componentName, opts = {}, cb = function() {}) {
+  async command(componentName, props, opts = {}, cb = function() {}) {
     const {
       hooksRetryTimeout = 10000,
       hooksRetryInterval = 150,
@@ -53,7 +53,7 @@ module.exports = class Command {
     } = this.pluginSettings;
 
     await this.api.launchComponentRenderer();
-    await this.mountComponent(componentName, opts);
+    await this.mountComponent(componentName, props, opts);
 
     await this.api
       .waitUntil(async () => {
@@ -180,7 +180,7 @@ module.exports = class Command {
     return mockContent;
   }
 
-  static _buildScript(componentName, opts = {}) {
+  static _buildScript(componentName, props, opts = {}) {
     let pluginsContent = '';
 
     if (opts.plugins) {
@@ -196,6 +196,7 @@ module.exports = class Command {
       
       let element = mount(Component, {
         attachTo: document.getElementById('app'),
+        props: ${JSON.stringify(props)},
         global: {
           plugins: [${pluginsContent}]
         }
