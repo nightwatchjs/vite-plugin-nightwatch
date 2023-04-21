@@ -38,6 +38,7 @@
     "nightwatch",
     "src",
     "index.js",
+    "index.d.ts",
     "README.md",
     "LICENSE"
   ],
