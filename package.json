@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-nightwatch",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "Component testing plugin that integrates Vite with Nightwatch.js. Supports Vue and React components with more to come soon.",
   "main": "index.js",
   "scripts": {
