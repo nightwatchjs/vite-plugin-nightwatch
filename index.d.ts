@@ -1,5 +1,6 @@
 import { NightwatchAPI, Element } from 'nightwatch';
 import { MountingOptions } from '@vue/test-utils';
+import { Plugin } from 'vite';
 
 type GlobalMountOptions = NonNullable<MountingOptions<any>['global']>;
 
@@ -18,7 +19,7 @@ declare module 'nightwatch' {
     mountVueComponent(
       componentPath: string,
       options?: {
-        props?: Pick<MountingOptions<any>, 'props'>;
+        props?: MountingOptions<Record<string, any>>['props'];
         plugin?: Pick<GlobalMountOptions, 'plugins'>;
         mocks?: Pick<GlobalMountOptions, 'mocks'>;
       },
@@ -27,3 +28,10 @@ declare module 'nightwatch' {
     launchComponentRenderer(): this;
   }
 }
+
+interface Options {
+  renderPage: string;
+  componentType?: 'vue' | 'react';
+}
+
+export default function nightwatchPlugin(options?: Options): Plugin;
