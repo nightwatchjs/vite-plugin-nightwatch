@@ -39,7 +39,7 @@ const vueScript = (path) =>
 	`;
 
 const svelteScript = (path) =>
-`
+  `
 	import Component from '${path}';
 	
 	const app = new Component({

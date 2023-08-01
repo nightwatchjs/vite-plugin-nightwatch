@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import CDPConnection from './src/cdp.js';
-import { injectRendererName, injectScript } from './src/utils/index.js';
+import {injectRendererName, injectScript} from './src/utils/index.js';
 
 export default function viteNightwatchPlugin(options = {}) {
   const enableCdpConnection = options.enableCdpConnection || false;

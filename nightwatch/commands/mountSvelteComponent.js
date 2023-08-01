@@ -28,7 +28,8 @@ module.exports = class Command {
   async mountComponent(componentName, opts, isRetry = false) {
     await this.api.execute(function (innerHTML) {
       function onReady(fn) {
-        if (document.readyState === 'complete' || document.readyState === 'interactive') {setTimeout(fn)} else {document.addEventListener('DOMContentLoaded', fn)}}
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {setTimeout(fn)} else {document.addEventListener('DOMContentLoaded', fn)}
+      }
       onReady(function() {
         var scriptTag = Object.assign(document.createElement('script'), {
           type: 'module',
