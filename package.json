@@ -1,13 +1,15 @@
 {
   "name": "vite-plugin-nightwatch",
   "version": "0.4.5",
-  "description": "Component testing plugin that integrates Vite with Nightwatch.js. Supports Vue and React components with more to come soon.",
+  "description": "Component testing plugin that integrates Vite with Nightwatch.js. Supports Vue, React and Svelte components with more to come soon.",
   "main": "index.js",
   "scripts": {
     "eslint": "eslint index.js src nightwatch",
     "test": "nightwatch --env vue --headless",
     "test-unit": "mocha test/unit",
-    "test-react": "nightwatch --env react --headless"
+    "test-react": "nightwatch --env react --headless",
+    "test-vue": "nightwatch --env vue --headless",
+    "test-svelte": "nightwatch --env svelte --headless"
   },
   "repository": {
     "type": "git",
@@ -20,7 +22,8 @@
     "component test",
     "component-testing",
     "vue",
-    "react"
+    "react",
+    "svelte"
   ],
   "types": "index.d.ts",
   "author": "Andrei Rusu",
@@ -43,9 +46,10 @@
     "LICENSE"
   ],
   "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.4.3",
     "@vitejs/plugin-react": "^3.1.0",
     "@vitejs/plugin-vue": "^4.1.0",
-    "chromedriver": "^112.0.0",
+    "chromedriver": "^114.0.3",
     "eslint": "^8.38.0",
     "mocha": "^9.2.2",
     "mockery": "^2.1.0",

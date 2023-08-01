@@ -1,6 +1,6 @@
-const WebSocket = require('ws');
+import WebSocket from 'ws';
 
-module.exports = class CDPConnection {
+export default class CDPConnection {
   constructor(url) {
     this.createCDPConnection(url);
   }

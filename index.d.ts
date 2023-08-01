@@ -31,7 +31,7 @@ declare module 'nightwatch' {
 
 interface Options {
   renderPage: string;
-  componentType?: 'vue' | 'react';
+  componentType?: 'vue' | 'react' | 'svelte';
 }
 
 export default function nightwatchPlugin(options?: Options): Plugin;
