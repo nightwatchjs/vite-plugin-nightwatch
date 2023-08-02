@@ -15,7 +15,7 @@ const startViteForReact = function() {
 
 const startViteForSvelte = function() {
   return vite.start({
-    configFile: path.join(__dirname, 'vite.config-svelte.mjs')
+    configFile: path.join(__dirname, 'vite.config-svelte.js')
   });
 }
 

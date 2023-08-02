@@ -1,20 +1,14 @@
-import fs from 'fs';
-import path from 'path';
-import CDPConnection from './src/cdp.mjs';
-import pkg from './src/utils/index.js';
-const {injectRendererName, injectScript} = pkg;
-import { fileURLToPath } from 'url'
+const fs = require('fs');
+const path = require('path');
+const CDPConnection = require('./src/cdp.js');
+const {injectRendererName, injectScript} = require('./src/utils/index.js');
 
-const _dirname = typeof __dirname !== 'undefined'
-  ? __dirname
-  : path.dirname(fileURLToPath(import.meta.url))
-
-export default function viteNightwatchPlugin(options = {}) {
+module.exports = function viteNightwatchPlugin(options = {}) {
   const enableCdpConnection = options.enableCdpConnection || false;
 
   const renderPage = options.renderPage
     ? path.resolve(options.renderPage)
-    : path.resolve(_dirname, 'src', 'renderer.html');
+    : path.resolve(__dirname, 'src', 'renderer.html');
 
   const componentType = options.componentType || 'vue';
 

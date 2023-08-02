@@ -2,7 +2,7 @@
   "name": "vite-plugin-nightwatch",
   "version": "0.4.5",
   "description": "Component testing plugin that integrates Vite with Nightwatch.js. Supports Vue, React and Svelte components with more to come soon.",
-  "main": "index.mjs",
+  "main": "index.js",
   "scripts": {
     "eslint": "eslint index.js src nightwatch",
     "test": "nightwatch --env vue --headless",
