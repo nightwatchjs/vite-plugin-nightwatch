@@ -1,45 +1,49 @@
-const assert = require('assert');
-const fs = require('fs');
+import { ok, strictEqual } from 'assert';
+import fs from 'fs';
 
 describe('Vite Nightwatch plugin basic tests', function() {
 
-  it('test plugin config with defaults', function(done) {
+  it.only('test plugin config with defaults', function(done) {
     fs.readFile = (filename, encoding, callback) => {
-      assert.ok(filename.endsWith('vite-plugin-nightwatch/src/renderer.html'));
+      ok(filename.endsWith('vite-plugin-nightwatch/src/renderer.html'));
       callback(null, '');
     };
 
-    const Plugin = require('../../index.js');
-    const server = Plugin();
+    import('../../index.mjs').then(({default: Plugin}) => {
+      const server = Plugin();
 
-    server.configureServer({
-      transformIndexHtml(url, data) {
-        assert.strictEqual(url, 'http://localhost');
-
-        done();
-
-        return Promise.resolve('')
-      },
-
-      middlewares: {
-        use(url, fn) {
-          assert.strictEqual(url, '/_nightwatch');
-
-          const req = {
-            url: 'http://localhost'
-          };
-          const res = {};
-
-
-          fn(req, res);
+      server.configureServer({
+        transformIndexHtml(url, data) {
+          strictEqual(url, 'http://localhost');
+  
+          done();
+  
+          return Promise.resolve('')
+        },
+  
+        middlewares: {
+          use(url, fn) {
+            strictEqual(url, '/_nightwatch');
+  
+            const req = {
+              url: 'http://localhost'
+            };
+            const res = {};
+  
+  
+            fn(req, res);
+          }
         }
-      }
+      });
+    }).catch(e => {
+      done(e)
     });
+    
   });
 
   it('test plugin config with componentType=react', function(done) {
     fs.readFile = (filename, encoding, callback) => {
-      assert.ok(filename.endsWith('vite-plugin-nightwatch/src/renderer.html'));
+      ok(filename.endsWith('vite-plugin-nightwatch/src/renderer.html'));
       callback(null, '');
     };
 
@@ -50,7 +54,7 @@ describe('Vite Nightwatch plugin basic tests', function() {
 
     server.configureServer({
       transformIndexHtml(url, data) {
-        assert.strictEqual(url, 'http://localhost');
+        strictEqual(url, 'http://localhost');
 
         done();
 
@@ -59,7 +63,7 @@ describe('Vite Nightwatch plugin basic tests', function() {
 
       middlewares: {
         use(url, fn) {
-          assert.strictEqual(url, '/_nightwatch');
+          strictEqual(url, '/_nightwatch');
 
           const req = {
             url: 'http://localhost'
@@ -75,7 +79,7 @@ describe('Vite Nightwatch plugin basic tests', function() {
 
   it('test plugin config with custom renderPage', function(done) {
     fs.readFile = (filename, encoding, callback) => {
-      assert.ok(filename.endsWith('custom_renderer.html'));
+      ok(filename.endsWith('custom_renderer.html'));
       callback(null, '');
     };
 
@@ -93,7 +97,7 @@ describe('Vite Nightwatch plugin basic tests', function() {
 
       middlewares: {
         use(url, fn) {
-          assert.strictEqual(url, '/_nightwatch');
+          strictEqual(url, '/_nightwatch');
 
           const req = {
             url: 'http://localhost'

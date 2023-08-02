@@ -1,5 +1,5 @@
 import react from '@vitejs/plugin-react'
-import nightwatchPlugin from '../../index.js'
+import nightwatchPlugin from '../../index.mjs'
 
 export default {
   optimizeDeps: {

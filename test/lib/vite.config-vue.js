@@ -1,5 +1,5 @@
 import vue from '@vitejs/plugin-vue'
-import nightwatchPlugin from '../../index.js'
+import nightwatchPlugin from '../../index.mjs'
 
 // https://vitejs.dev/config/
 export default {
