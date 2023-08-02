@@ -176,9 +176,7 @@ module.exports = class Command {
         props: ${JSON.stringify(opts.props || {})},
         context: ${opts.context},
         anchor: ${opts.anchor || null},
-        hydrate: ${opts.hydrate || false},
-        intro: ${opts.intro || false},
-        accessors: ${opts.accessors || false}
+        intro: ${opts.intro || false}
       });
 
       window['@@component_element'] = element;
