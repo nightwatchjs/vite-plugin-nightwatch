@@ -11,6 +11,7 @@ describe('Vite Nightwatch plugin basic tests', function() {
 
     const Plugin = require('../../index.js');
     const server = Plugin();
+
     server.configureServer({
       transformIndexHtml(url, data) {
         assert.strictEqual(url, 'http://localhost');
