@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const CDPConnection = require('./src/cdp.js');
-const {injectRendererName, injectScript} = require('./src/utils/index.js');
+const {injectRendererName, injectScript} = require('./src/utils/');
 
 module.exports = function viteNightwatchPlugin(options = {}) {
   const enableCdpConnection = options.enableCdpConnection || false;

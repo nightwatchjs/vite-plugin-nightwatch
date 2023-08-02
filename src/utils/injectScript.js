@@ -50,11 +50,17 @@ const svelteScript = (path) =>
 	window['@component_class'] = Component;
 `;
 
+
 module.exports = function (content, componentType, path) {
-  return content.replace(
-    '<!-- script -->',
-    `<script type="module">
-			${componentType === 'react' ? reactScript(path) : (componentType === 'svelte' ? svelteScript(path) : vueScript(path))}
-		</script>`
-  );
+  let scriptType;
+
+  if (componentType === 'react') {
+    scriptType = reactScript(path);
+  } else if (componentType === 'svelte') {
+    scriptType = svelteScript(path);
+  } else {
+    scriptType = vueScript(path);
+  }
+
+  return content.replace('<!-- script -->', `<script type="module">${scriptType}</script>`);
 };
