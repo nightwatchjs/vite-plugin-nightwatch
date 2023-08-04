@@ -13,8 +13,6 @@ module.exports = class Command {
 
     launchUrl.pathname = '/_nightwatch/';
 
-    console.log(launchUrl.toString());
-
     return this.api.navigateTo(launchUrl.toString());
   }
 };
