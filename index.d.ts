@@ -31,7 +31,7 @@ declare module 'nightwatch' {
       },
       callback?: (this: NightwatchAPI, result: Element) => void
     ): Awaitable<this, Element>;
-    mountSvelteComponent(
+    mountSvelteComponent<T extends SvelteComponent>(
       componentPath: string,
       options?: SvelteComponentOptions<T>,
       callback?: (this: NightwatchAPI, result: Element) => void
