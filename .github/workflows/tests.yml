@@ -32,3 +32,6 @@ jobs:
 
       - name: Run React component tests
         run: npm run test-react
+
+      - name: Run Svelte component tests
+        run: npm run test-svelte
