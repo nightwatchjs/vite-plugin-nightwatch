@@ -13,6 +13,12 @@ const startViteForReact = function() {
   });
 }
 
+const startViteForSvelte = function() {
+  return vite.start({
+    configFile: path.join(__dirname, 'vite.config-svelte.js')
+  });
+}
+
 let viteServer;
 module.exports = {
   async before() {
@@ -22,6 +28,9 @@ module.exports = {
         break;
       case 'vue':
         viteServer = await startViteForVue();
+        break;
+      case 'svelte':
+        viteServer = await startViteForSvelte();
         break;
     }
 

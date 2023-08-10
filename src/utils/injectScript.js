@@ -38,11 +38,29 @@ const vueScript = (path) =>
 		window['@component_class'] = Component;
 	`;
 
+const svelteScript = (path) =>
+  `
+	import Component from '${path}';
+	
+	const app = new Component({
+		target: document.getElementById('app')
+	});
+	
+	window['@component_element'] = element;
+	window['@component_class'] = Component;
+`;
+
+
 module.exports = function (content, componentType, path) {
-  return content.replace(
-    '<!-- script -->',
-    `<script type="module">
-			${componentType === 'react' ? reactScript(path) : vueScript(path)}
-		</script>`
-  );
+  let scriptType;
+
+  if (componentType === 'react') {
+    scriptType = reactScript(path);
+  } else if (componentType === 'svelte') {
+    scriptType = svelteScript(path);
+  } else {
+    scriptType = vueScript(path);
+  }
+
+  return content.replace('<!-- script -->', `<script type="module">${scriptType}</script>`);
 };

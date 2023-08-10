@@ -45,6 +45,20 @@ module.exports = {
       }
     },
 
+    vue: {
+      src_folders: ['test/specs/vue'],
+      globals: {
+        componentType: 'vue'
+      }
+    },
+
+    svelte: {
+      src_folders: ['test/specs/svelte'],
+      globals: {
+        componentType: 'svelte'
+      }
+    },
+
     default: {
       disable_error_log: false,
       launch_url: '',
