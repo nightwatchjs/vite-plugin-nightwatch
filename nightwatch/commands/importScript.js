@@ -10,22 +10,20 @@ module.exports = class Command {
       document.body.appendChild(scriptEl);
     };
 
-    const element = await this.api
+    const result = await this.api
       .execute(scriptFn, [scriptFileName, scriptType])
       .pause(500)
       .execute(function() {
         return document.querySelectorAll('#app')[0].firstElementChild;
-      }, [], (result) => {
-        const componentInstance = this.api.createElement(result.value, {
-          isComponent: true,
-          type: componentType
-        });
+      }, []);
 
-        cb(componentInstance);
+    const componentInstance = this.api.createElement(result, {
+      isComponent: true,
+      type: componentType
+    });
 
-        return componentInstance;
-      });
+    cb(componentInstance);
 
-    return element;
+    return componentInstance;
   }
 };
