@@ -11,7 +11,8 @@ module.exports = class Command {
     }
 
     if (global.viteServer) {
-      launchUrl = `http://localhost:${global.viteServer.config.port}`;
+      const protocol = global.viteServer.config.server.https ? 'https' : 'http';
+      launchUrl = `${protocol}://localhost:${global.viteServer.config.port}`;
     }
 
     return this.api.navigateTo(`${launchUrl}/_nightwatch/`);
