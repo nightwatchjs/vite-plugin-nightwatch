@@ -31,7 +31,7 @@
     "@vue/test-utils": "^2.3.2",
     "assertion-error": "^1.1.0",
     "mkdirp": "^2.1.6",
-    "sinon": "^15.0.4",
+    "sinon": "^17.0.1",
     "ws": "^8.13.0"
   },
   "files": [
